@@ -17,9 +17,7 @@ def indent_it(value):
     indent = value
 
 def render(gen: Tag) -> str:
-    if type(gen) == list:
-        return ''.join(render(t) for t in gen)
-    return ''.join(gen)
+    return ''.join(render(t) for t in gen) if type(gen) == list else ''.join(gen)
 
 
 def solo_tag(tag_name: str, ** kwargs) -> Tag:
@@ -38,13 +36,10 @@ def solo_tag(tag_name: str, ** kwargs) -> Tag:
                for k, v in kwargs.items()
                if v is not None and (type(v) != bool or v)}
 
-    attrs = ""
-    for k,v in kwargs.items():
-        if type(v) == bool:
-                attrs += f' {k}'
-        else:
-                attrs += f' {k}="{v}"'
-
+    attrs = "".join(
+        f' {k}' if type(v) == bool else f' {k}="{v}"'
+        for k, v in kwargs.items()
+    )
     yield f"<{tag_name}{attrs}>{_cr if indent else ''}"
 
 
